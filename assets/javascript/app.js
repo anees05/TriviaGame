@@ -13,6 +13,9 @@ $("#start").on("click", function() {
     game.loadQuestion();
 })
 
+$(document).on("click",'.answer-button',function(e){
+    game.clicked(e);
+})
 
 $(document).on("click",'#reset',function(){
     game.reset();
@@ -88,8 +91,54 @@ var game = {
     counter: 20,
     currentQuestion: 0, 
     
-    
-    
+
+    countdown: function() {
+        game.counter--;
+        $('#counter').html(game.counter);
+        if(game.counter <= 0){
+            console.log("Out of Time!");
+            game.timeUp();
+        } 
+    },
+
+    loadQuestion: function() {
+        timer = setInterval(game.countdown, 1000);
+        $('#subwrapper').html("<h2> Time Remaining <span id='counter'>20</span> Seconds </h2>");
+        $('#subwrapper').append('<h2>'+questions[game.currentQuestion].question+'</h2>');
+        for(var i = 0; i < questions[game.currentQuestion].choices.length; i++)
+        {
+            $('#subwrapper').append('<button class ="answer-button" id="button-'+i+'" data-name"'+questions[game.currentQuestion].choices[i]+'">'+questions[game.currentQuestion].choices[i]+'</button>');
+        }
+    },
+
+    nextQuestion: function() {
+        game.counter = 20;
+        $("#counter").html(game.counter);
+        game.currentQuestion++;
+        game.loadQuestion();
+    },
+
+    timeUp: function() {
+        clearInterval(timer);
+        game.notAnswered++;
+        $("#subwrapper").html("<h2>Out of time!</h2>");
+        $("#subwrapper").append("<h3>The correct answer was: " + questions[game.currentQuestion].correctAnswer+"</h3>");
+        if(game.currentQuestion==questions.length-1){
+            setTimeout(game.results,3*1000);
+        } else {
+            setTimeout(game.nextQuestion,3*1000);
+        }
+    },
+
+    clicked: function(e) {
+        clearInterval(timer);
+        if($(e.target).data("name")==questions[game.currentQuestion].correctAnswer){
+            game.correct();
+        } else {
+            game.incorrect();
+        }
+    },
+
     correct: function() {
         console.log("Yes");
         clearInterval(timer);
@@ -114,7 +163,15 @@ var game = {
         }
     },
     
-    
+    result: function() {
+        clearInterval(timer);
+        $("#subwrapper").html("<h2>Game Over!</h2>");
+        $("#subwraper").append("<h3>Correct: " + game.correct + "</h3>");
+        $("#subwraper").append("<h3>Incorrect: " + game.incorrect) + "</h3>";
+        $("#subwraper").append("<h3>Not Answered: " + game.notAnswered) + "</h3>";
+        $("#subwraper").append("<button id='reset'>Reset</button>");
+    },
+
     reset: function() {
         game.currentQuestion = 0;
         game.counter = 0;
