@@ -8,10 +8,15 @@
 // 7. Display number of correct and incorrect answers
 // 8. Create a reset when game is over
 
-var wins = 0;
-var loss = 0;
-var timer = 10;
-var questionNum = 0;
+$("#start").on("click", function() {
+    $("#start").remove();
+    game.loadQuestion();
+})
+
+
+$(document).on("click",'#reset',function(){
+    game.reset();
+})
 
 var questions = [
     {
@@ -31,7 +36,7 @@ var questions = [
         choices: ["Rome", "Moscow", "Milan", "London"],
         correctAnswer: "London"
     },
-    
+
     {
         question: "How many MLS teams are based in Canada?",
         choices: ["One", "Six", "Four", "Three"],
@@ -75,34 +80,55 @@ var questions = [
     }
 ];
 
-function win() {
-    $("#game").html("<p>Good job!</p>");
-    wins++;
-    var correctAnswer = questions [questionNum].correctAnswer;
-    $("#game").append("<p>The answer was <span class='answer'>" + correctAnswer + "</span><p>" + questions[questionNum]);
-    setTimeout(nextquestion, 10000);
-    questionNum++;
+var game = {
+    questions: questions,
+    correct: 0,
+    incorrect: 0,
+    notAnswered: 0,
+    counter: 20,
+    currentQuestion: 0, 
+    
+    
+    
+    correct: function() {
+        console.log("Yes");
+        clearInterval(timer);
+        game.correct++;
+        $("#subwrapper").html("<h2>That is correct!</h2>");
+        if(game.currentQuestion==questions.length-1){
+            setTimeout(game.results,3*1000);
+        } else {
+            setTimeout(game.nextQuestion,3*1000);
+        }
+    },
+    incorrect: function() {
+        console.log("No");
+        clearInterval(timer);
+        game.incorrect++;
+        $("#subwrapper").html("<h2>That is incorrect!</h2>");
+        $("#subwrapper").append("<h3>The correct answer was: " + questions[game.currentQuestion].correctAnswer+"</h3>");
+        if(game.currentQuestion==questions.length-1){
+            setTimeout(game.results,3*1000);
+        } else {
+            setTimeout(game.nextQuestion,3*1000);
+        }
+    },
+    
+    
+    reset: function() {
+        game.currentQuestion = 0;
+        game.counter = 0;
+        game.correct = 0;
+        game.incorrect = 0;
+        game.notAnswered = 0;
+        game.loadQuestion();
+    }
+    
 }
 
-function loss() {
-    $("#game").html("<p>Sorry, that is incorrect!</p>");
-    loss++;
-    var correctAnswer = questions [questionNum].correctAnswer;
-    $("#game").append("<p>The answer was <span class='answer'>" + correctAnswer + "</span><p>" + questions[questionNum]);
-    setTimeout(nextquestion, 10000);
-    questionNum++;
-}
 
-function chosenQuestion() {
-    $("#gameScreen").append("<p>" + 
-    questions[questionNum].question + 
-    "</p><p class='choices'>" + 
-    questions[questionNum].choices[0] + 
-    "</p><p class='choices'>" + 
-    questions[questionNum].choices[1] + 
-    "</p><p class='choices'>" + 
-    questions[questionNum].choices[2] + 
-    "</p><p class='choices'>" + 
-    questions[questionNum].choices[3] + 
-    "</p>");
-}
+
+
+
+
+
