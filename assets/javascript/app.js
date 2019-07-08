@@ -6,7 +6,7 @@
 // 5. If user guess is correct then add a windo / if user guess is incorrect then add a loss
 // 6. If user guess is correct then display winning message / if user guess is incorrect then display losing message
 // 7. Display number of correct and incorrect answers
-// 8. Create a reset when game is over 
+// 8. Create a reset when game is over
 
 var wins = 0;
 var loss = 0;
@@ -73,4 +73,36 @@ var questions = [
         choices: ["South Africa", "USA", "Canada", "Turkey"],
         correctAnswer: "South Africa"
     }
-]
+];
+
+function win() {
+    $("#game").html("<p>Good job!</p>");
+    wins++;
+    var correctAnswer = questions [questionNum].correctAnswer;
+    $("#game").append("<p>The answer was <span class='answer'>" + correctAnswer + "</span><p>" + questions[questionNum]);
+    setTimeout(nextquestion, 10000);
+    questionNum++;
+}
+
+function loss() {
+    $("#game").html("<p>Sorry, that is incorrect!</p>");
+    loss++;
+    var correctAnswer = questions [questionNum].correctAnswer;
+    $("#game").append("<p>The answer was <span class='answer'>" + correctAnswer + "</span><p>" + questions[questionNum]);
+    setTimeout(nextquestion, 10000);
+    questionNum++;
+}
+
+function chosenQuestion() {
+    $("#gameScreen").append("<p>" + 
+    questions[questionNum].question + 
+    "</p><p class='choices'>" + 
+    questions[questionNum].choices[0] + 
+    "</p><p class='choices'>" + 
+    questions[questionNum].choices[1] + 
+    "</p><p class='choices'>" + 
+    questions[questionNum].choices[2] + 
+    "</p><p class='choices'>" + 
+    questions[questionNum].choices[3] + 
+    "</p>");
+}
