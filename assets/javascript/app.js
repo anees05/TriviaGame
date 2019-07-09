@@ -21,6 +21,9 @@ $(document).on("click",'#reset',function(){
     game.reset();
 })
 
+
+
+
 var questions = [
     {
         question: "How many teams competed in the 2018 FIFA World Cup?",
@@ -85,8 +88,8 @@ var questions = [
 
 var game = {
     questions: questions,
-    correct: 0,
-    incorrect: 0,
+    right: 0,
+    wrong: 0,
     notAnswered: 0,
     counter: 20,
     currentQuestion: 0, 
@@ -107,7 +110,7 @@ var game = {
         $('#subwrapper').append('<h2>'+questions[game.currentQuestion].question+'</h2>');
         for(var i = 0; i < questions[game.currentQuestion].choices.length; i++)
         {
-            $('#subwrapper').append('<button class ="answer-button" id="button-'+i+'" data-name"'+questions[game.currentQuestion].choices[i]+'">'+questions[game.currentQuestion].choices[i]+'</button>');
+            $('#subwrapper').append('<button class ="answer-button" id="button-'+i+'" data-name="'+questions[game.currentQuestion].choices[i]+'">'+questions[game.currentQuestion].choices[i]+'</button>');
         }
     },
 
@@ -124,10 +127,19 @@ var game = {
         $("#subwrapper").html("<h2>Out of time!</h2>");
         $("#subwrapper").append("<h3>The correct answer was: " + questions[game.currentQuestion].correctAnswer+"</h3>");
         if(game.currentQuestion==questions.length-1){
-            setTimeout(game.results,3*1000);
+            setTimeout(game.result,3*1000);
         } else {
             setTimeout(game.nextQuestion,3*1000);
         }
+    },
+
+    result: function() {
+        clearInterval(timer);
+        $("#subwrapper").html("<h2>Game Over!</h2>");
+        $("#subwrapper").append("<h3>Correct: " + game.right + "</h3>");
+        $("#subwrapper").append("<h3>Incorrect: " + game.wrong) + "</h3>";
+        $("#subwrapper").append("<h3>Not Answered: " + game.notAnswered) + "</h3>";
+        $("#subwrapper").append("<button id='reset'>Reset</button>");
     },
 
     clicked: function(e) {
@@ -142,10 +154,10 @@ var game = {
     correct: function() {
         console.log("Yes");
         clearInterval(timer);
-        game.correct++;
+        game.right++;
         $("#subwrapper").html("<h2>That is correct!</h2>");
         if(game.currentQuestion==questions.length-1){
-            setTimeout(game.results,3*1000);
+            setTimeout(game.result,3*1000);
         } else {
             setTimeout(game.nextQuestion,3*1000);
         }
@@ -153,39 +165,23 @@ var game = {
     incorrect: function() {
         console.log("No");
         clearInterval(timer);
-        game.incorrect++;
+        game.wrong++;
         $("#subwrapper").html("<h2>That is incorrect!</h2>");
         $("#subwrapper").append("<h3>The correct answer was: " + questions[game.currentQuestion].correctAnswer+"</h3>");
         if(game.currentQuestion==questions.length-1){
-            setTimeout(game.results,3*1000);
+            setTimeout(game.result,3*1000);
         } else {
             setTimeout(game.nextQuestion,3*1000);
         }
     },
-    
-    result: function() {
-        clearInterval(timer);
-        $("#subwrapper").html("<h2>Game Over!</h2>");
-        $("#subwraper").append("<h3>Correct: " + game.correct + "</h3>");
-        $("#subwraper").append("<h3>Incorrect: " + game.incorrect) + "</h3>";
-        $("#subwraper").append("<h3>Not Answered: " + game.notAnswered) + "</h3>";
-        $("#subwraper").append("<button id='reset'>Reset</button>");
-    },
 
     reset: function() {
+        game.counter = 20;
         game.currentQuestion = 0;
-        game.counter = 0;
-        game.correct = 0;
-        game.incorrect = 0;
+        game.right = 0;
+        game.wrong = 0;
         game.notAnswered = 0;
         game.loadQuestion();
-    }
-    
+    }   
+
 }
-
-
-
-
-
-
-
